@@ -1,38 +1,39 @@
-import React, { PureComponent } from 'react';
-import {
-  Keyboard,
-  KeyboardAvoidingView,
-  Platform,
-  Animated,
-  FlexStyle,
-  SafeAreaView,
-  Dimensions,
-  TouchableOpacity,
-} from 'react-native';
 import styled from '@emotion/native';
 import addons from '@storybook/addons';
 import Channel from '@storybook/channels';
+import { StoryStore } from '@storybook/client-api';
+import React, { PureComponent } from 'react';
+import {
+  Animated,
+  Dimensions,
+  FlexStyle,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  TouchableOpacity,
+} from 'react-native';
 import StoryListView from '../StoryListView';
 import StoryView from '../StoryView';
-import Addons from './addons';
-import Panel from './panel';
-import Navigation from './navigation';
 import AbsolutePositionedKeyboardAwareView, {
   PreviewDimens,
 } from './absolute-positioned-keyboard-aware-view';
-import { PREVIEW } from './navigation/constants';
+import Addons from './addons';
 import {
-  getPreviewPosition,
-  getPreviewScale,
   getAddonPanelPosition,
   getNavigatorPanelPosition,
+  getPreviewPosition,
+  getPreviewScale,
 } from './animation';
+import Navigation from './navigation';
+import { PREVIEW } from './navigation/constants';
+import Panel from './panel';
 
 const ANIMATION_DURATION = 300;
 const IS_IOS = Platform.OS === 'ios';
 
 interface OnDeviceUIProps {
-  stories: any;
+  storyStore: StoryStore;
   url?: string;
   tabOpen?: number;
   isUIHidden?: boolean;
@@ -109,7 +110,7 @@ export default class OnDeviceUI extends PureComponent<OnDeviceUIProps, OnDeviceU
 
   render() {
     const {
-      stories,
+      storyStore,
       url,
       isUIHidden,
       shouldDisableKeyboardAvoidingView,
@@ -141,7 +142,7 @@ export default class OnDeviceUI extends PureComponent<OnDeviceUIProps, OnDeviceU
             <Animated.View style={previewWrapperStyles}>
               <Animated.View style={previewStyles}>
                 <Preview disabled={tabOpen === PREVIEW}>
-                  <StoryView url={url} onDevice stories={stories} />
+                  <StoryView url={url} onDevice storyStore={storyStore} />
                 </Preview>
                 {tabOpen !== PREVIEW ? (
                   <TouchableOpacity style={absolutePosition} onPress={this.handleOpenPreview} />
@@ -149,7 +150,7 @@ export default class OnDeviceUI extends PureComponent<OnDeviceUIProps, OnDeviceU
               </Animated.View>
             </Animated.View>
             <Panel style={getNavigatorPanelPosition(this.animatedValue, previewWidth)}>
-              <StoryListView stories={stories} />
+              <StoryListView storyStore={storyStore} />
             </Panel>
             <Panel style={getAddonPanelPosition(this.animatedValue, previewWidth)}>
               <Addons />
