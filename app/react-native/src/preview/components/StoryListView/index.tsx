@@ -85,7 +85,7 @@ export default class StoryListView extends Component<Props, State> {
     this.state = {
       data: [],
       originalData: [],
-      storyId: props.storyStore.getSelection().storyId,
+      storyId: props.storyStore.getSelection()?.storyId || '',
     };
   }
 
